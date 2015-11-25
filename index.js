@@ -6,16 +6,16 @@ hexo.extend.helper.register('is_staging', tags.isStagingHelper);
 
 /**
  * get staging name from config or argv
- */   
+ */
 var getStagingName = function(){
-    
+
     // get staging form config
     var stagingName = hexo.config.staging;
-    
+
     if(undefined === stagingName){
         stagingName = false;
     }
-      
+
     var stagingByArgv = false;
 
     for(var i = 0, x = process.argv.length; i < x; i += 1){
@@ -30,14 +30,14 @@ var getStagingName = function(){
     if(undefined === hexo.config.stagings[stagingName]){
         return false;
     }
-    
+
     return stagingName;
-    
+
 };
 
 /**
  * overwrite config by active staging
- */   
+ */
 var changeConfig = function(stagingName){
     hexo.config.staging = stagingName;
     var staging = hexo.config.stagings[stagingName];
@@ -53,13 +53,13 @@ var changeConfig = function(stagingName){
 
 /**
  * if staging is defined, change the config
- */   
+ */
 if(undefined !== hexo.config.stagings){
-    var cli = require('./lib/cli.js')(hexo);
+    require('./lib/cli.js')(hexo);
 
     var stagingName = getStagingName();
 
     changeConfig(stagingName);
-    
+
 }
 
