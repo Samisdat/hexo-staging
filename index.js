@@ -1,27 +1,21 @@
 'use strict';
 
-var changeConfig = function(stagingName, config){
-    var staging = config.stagings[stagingName];
+// add tags anyway
+var tags = require('./lib/tags.js');
+hexo.extend.helper.register('is_staging', tags.isStagingHelper);
 
-    for(var key in staging){
-        if(undefined === config[key]){
-            continue;
-        }
-        config[key] = staging[key];
-    }
-};
-
-var checkStaging = function(stagingName, config){
+/**
+ * get staging name from config or argv
+ */   
+var getStagingName = function(){
+    
+    // get staging form config
+    var stagingName = hexo.config.staging;
+    
     if(undefined === stagingName){
-        return false;
+        stagingName = false;
     }
-    if(undefined === config.stagings[stagingName]){
-        return false;
-    }
-    return stagingName;
-};
-
-(function(){
+      
     var stagingByArgv = false;
 
     for(var i = 0, x = process.argv.length; i < x; i += 1){
@@ -30,26 +24,42 @@ var checkStaging = function(stagingName, config){
         }
     }
 
-    if(false === stagingByArgv){
+    if(false !== stagingByArgv){
+        stagingName = stagingByArgv;
+    }
+    if(undefined === hexo.config.stagings[stagingName]){
         return false;
     }
-    if(undefined === hexo.config.stagings[stagingByArgv]){
-        return false;
+    
+    return stagingName;
+    
+};
+
+/**
+ * overwrite config by active staging
+ */   
+var changeConfig = function(stagingName){
+    hexo.config.staging = stagingName;
+    var staging = hexo.config.stagings[stagingName];
+
+    for(var key in staging){
+        if(undefined === hexo.config[key]){
+            continue;
+        }
+        hexo.config[key] = staging[key];
     }
-    hexo.config.staging = stagingByArgv;
-})();
+};
 
-var staging = checkStaging(hexo.config.staging, hexo.config);
 
-if(false !== staging){
-    changeConfig(staging, hexo.config);
+/**
+ * if staging is defined, change the config
+ */   
+if(undefined !== hexo.config.stagings){
+    var cli = require('./lib/cli.js')(hexo);
+
+    var stagingName = getStagingName();
+
+    changeConfig(stagingName);
+    
 }
 
-hexo.extend.console.store.generate.options.options.push(
-    { name: '--staging', desc: 'Switch staging' }
-);
-hexo.extend.console.store.generate.options.arguments = [
-    { name: '--staging', desc: 'Switch staging' }
-];
-
-console.log(hexo.extend.console.store.generate.options);
