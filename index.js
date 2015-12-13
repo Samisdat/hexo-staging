@@ -1,8 +1,13 @@
 'use strict';
 
-// add tags anyway
-var tags = require('./lib/tags.js');
-hexo.extend.helper.register('is_staging', tags.isStagingHelper);
+// add tag
+hexo.extend.helper.register('is_staging', function(stagingName){
+    if(undefined === this.config.staging){
+        return false;
+    }
+
+    return (stagingName === this.config.staging);
+});
 
 /**
  * get staging name from config or argv
