@@ -14,24 +14,21 @@ hexo.extend.helper.register('is_staging', function(stagingName){
  */
 var getStagingName = function(){
 
-    // get staging form config
-    var stagingName = hexo.config.staging;
-
-    if(undefined === stagingName){
-        stagingName = false;
-    }
-
-    var stagingByArgv = false;
+    var stagingName = false;
 
     for(var i = 0, x = process.argv.length; i < x; i += 1){
         if('--staging' === process.argv[i] && undefined !== process.argv[(i + 1)]){
-            stagingByArgv = process.argv[(i + 1)];
+            stagingName = process.argv[(i + 1)];
+            break;
         }
     }
 
-    if(false !== stagingByArgv){
-        stagingName = stagingByArgv;
+    // no staging given by cli parameter
+    if(false === stagingName){
+        return false;
     }
+
+    // stagib given, but not found in config
     if(undefined === hexo.config.stagings[stagingName]){
         return false;
     }
