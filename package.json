@@ -1,0 +1,15 @@
+{
+  "name": "hexo-staging",
+  "version": "0.1.0",
+  "description": "Staging for hexo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "hexo",
+    "staging"
+  ],
+  "author": "Bastian Pertz",
+  "license": "MIT"
+}
